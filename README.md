@@ -1,2 +1,4 @@
-#C4D
+C4D
+===
+
 cinema 4d scripts
