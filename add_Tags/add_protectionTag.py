@@ -11,27 +11,16 @@ import c4d
 
 
 def main():
-    doc = c4d.documents.GetActiveDocument()
     selected = doc.GetActiveObjects(0)
-    if not selected:
-        return
-
-    t_i_d = 5629  # Tag-ID goes here
-
+    if not selected: return
     doc.StartUndo()
+    doc.SetActiveTag(None, c4d.SELECTION_NEW)
     for obj in selected:
-        v = []  # Initiate list for all tag IDs
-        t = obj.GetTags()  # Get all tags from object
-        if t is not None:  # If already Tags found -> do Checks
-            for i in t:  # Extract Tag IDs from all tags
-                i = str(str(i).strip()).split()
-                v.append(i[6])  # Save all tag IDs to v
-            if str(t_i_d) in v:  # check if one tag is Portection tag already
-                pass  # if yes, move onto nex object
-            else:
-                tag = obj.MakeTag(t_i_d)  # create + add protection tag
-                tag.SetBit(c4d.BIT_ACTIVE)  # set tag active in attr.manager
-                doc.AddUndo(c4d.UNDOTYPE_NEW, tag)
+        if obj.GetTag(c4d.Tprotection) == None:
+            tag = obj.MakeTag(c4d.Tprotection)
+            doc.SetActiveTag(tag, c4d.SELECTION_ADD)
+            doc.AddUndo(c4d.UNDOTYPE_NEW, tag)
+
     doc.EndUndo()
     c4d.EventAdd()
 
